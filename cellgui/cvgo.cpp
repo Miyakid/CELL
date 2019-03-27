@@ -23,24 +23,12 @@ int cvgo() {
 	Mat x;
 	Mat y;
 	Mat fin;
-	//Scharr(blur_src, x, CV_16S, 1, 0, 3);
-	//Scharr(blur_src, y, CV_16S, 0, 1, 3);
 	Sobel(blur_src, x, CV_16S, 1, 0, 3);
 	Sobel(blur_src, y, CV_16S, 0, 1, 3);
 	convertScaleAbs(x, x);
 	convertScaleAbs(y, y);
 	//imshow(output_title, gray);
-	/*
-	//开操作：先腐蚀后膨胀（去掉小的对象、干扰线）
-	Mat kernel1 = getStructuringElement(MORPH_RECT, Size(5, 1), Point(-1, -1));
-	morphologyEx(x, x, CV_MOP_OPEN, kernel1);
-	imshow("X", x);
 
-	//开操作：先腐蚀后膨胀（去掉小的对象、干扰线）
-	Mat kernel2 = getStructuringElement(MORPH_RECT, Size(1, 5), Point(-1, -1));
-	morphologyEx(y, y, CV_MOP_OPEN, kernel2);
-	imshow("Y", y);
-	*/
 	int h = x.rows;
 	int w = x.cols;
 	fin = Mat(x.size(), x.type());
@@ -79,13 +67,6 @@ int cvgo() {
 
 	fin = ddst;
 
-	//waitKey(0);
-	/*
-	//闭操作：先膨胀后腐蚀（填充小的洞）
-	Mat kernel = getStructuringElement(MORPH_RECT, Size(11, 11), Point(-1, -1));
-	morphologyEx(fin, fin, CV_MOP_CLOSE, kernel);
-	imshow("final2", fin);
-	*/
 
 	//填充孔洞,如果不执行这一步也可以，但是碰到较小细胞时容易被当作小物体去除，遇到复杂外形细胞时易于做膨胀操作
 	Mat dstBw;
@@ -106,27 +87,6 @@ int cvgo() {
 	imshow("膨胀", dstBw);
 
 
-
-	/*    Mat dst;//开运算去除小对象
-	Mat kernel_1 = getStructuringElement(MORPH_RECT, Size(5, 5), Point(-1, -1));
-	morphologyEx(dstBw, dst, CV_MOP_OPEN, kernel_1);
-	imshow("去除小物体", dst);*/
-	/*//加边框
-	int h2 = dst.rows;
-	int w2 = dst.cols;
-	for (int row = 0; row < h2; row++)
-	{
-	for (int col = 0; col < w2; col++)
-	{
-	if (row < 3 || col < 3)
-	dst.at<uchar>(row, col) = 0;
-	else if(row>(h2-3)||col>(w2-3))
-	dst.at<uchar>(row, col) = 0;
-
-	}
-	}
-	imshow("加边框", dst);
-	*/
 	//轮廓发现、绘制、截取、保存
 	vector<vector<Point>> contours1;
 	vector<Vec4i> hierarchy1;
