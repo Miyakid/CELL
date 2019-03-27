@@ -6,7 +6,7 @@ using namespace std;
 
 int cvgo() {
 	//double t = getTickCount();
-	Mat src = imread("C:/Users/liuzhongtian/Desktop/1/test9.jpg");
+	Mat src = imread("test9.jpg");
 	if (!src.data) {
 		printf("could not load image...\n");
 		return -1;
