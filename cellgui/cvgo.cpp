@@ -6,7 +6,7 @@ using namespace std;
 
 int cvgo() {
 	//double t = getTickCount();
-	Mat src = imread("test9.jpg");
+	Mat src = imread("D:\\SRTP\\test-input\\test10.jpg");
 	if (!src.data) {
 		printf("could not load image...\n");
 		return -1;
@@ -104,18 +104,17 @@ int cvgo() {
 
 			//割取矩形区域保存（改进）
 			Mat src_ex;
-			char file_name[] = "C:\\Users\\liuzhongtian\\Desktop\\2\\test0000.jpg";
-			//sprintf_s(file_name, "C:\\Users\\liuzhongtian\\Desktop\\2\\test%d.jpg", int(i + 1));
+			char file_name[] = "D:\\SRTP\\test-split\\test0000.jpg";
+			sprintf_s(file_name, "D:\\SRTP\\test-split\\test%d.jpg", int(i + 1));
 			copyMakeBorder(src, src_ex, 8, 8, 8, 8, BORDER_CONSTANT, Scalar(255, 255, 255));	//扩大原图像并填充边缘
-																								//imwrite(file_name, src_ex(rect + Point(8, 8)));
+			imwrite(file_name, src_ex(rect + Point(8, 8)));
 		}
 	}
 
 	imshow("提取结果", bg);
-	//imwrite("C:\\Users\\liuzhongtian\\Desktop\\2\\test0.jpg", bg);
+	imwrite("D:\\SRTP\\test-output\\test9.jpg", bg);
 	//double timeconsume = (getTickCount() - t) / getTickFrequency();
 	//printf("time consume %.3f", timeconsume);
-
 
 	waitKey(0);
 
