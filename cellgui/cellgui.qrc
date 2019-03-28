@@ -1,4 +1,13 @@
 <RCC>
-    <qresource prefix="cellgui">
+    <qresource prefix="/cellgui">
+        <file>Resources/icons/包.png</file>
+        <file>Resources/icons/保存.png</file>
+        <file>Resources/icons/播放.png</file>
+        <file>Resources/icons/错的.png</file>
+        <file>Resources/icons/计算器.png</file>
+        <file>Resources/icons/文件.png</file>
+        <file>Resources/icons/细胞_cells.png</file>
+        <file>Resources/app/icoCELL.ico</file>
+        <file>Resources/icons/Forward.png</file>
     </qresource>
 </RCC>

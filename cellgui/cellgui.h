@@ -33,4 +33,5 @@ private slots:             // ²Ûº¯Êý
 	void Pic_save();     
 	void Pic_saveas();
 	void autobatch();
+	void next();
 };

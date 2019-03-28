@@ -5,8 +5,11 @@ using namespace std;
 
 QImage cvMat2QImage(const Mat& mat);
 Mat QImage2cvMat(QImage image);
+QString dirs1_str, dirs2_str;
+int dir_cout;
 Mat G0;
 Mat G;
+
 
 cellgui::cellgui(QWidget *parent)
 	: QMainWindow(parent)
@@ -17,7 +20,7 @@ cellgui::cellgui(QWidget *parent)
 	setWindowTitle("	CELL	");
 
 	// 软件图标
-	setWindowIcon(QIcon("../Image/icon/细胞_cells.png"));
+	setWindowIcon(QIcon(":/cellgui/Resources/icons/细胞_cells.png"));
 
 	// 界面大小
 	resize(QApplication::desktop()->width()*0.5, QApplication::desktop()->height()*0.7);
@@ -37,29 +40,33 @@ void cellgui::Menu_File()
 	// 菜单栏
 	QMenu *file = menuBar()->addMenu(tr("文件"));
 
-	QAction *Act_pic_open = new QAction(QIcon("../Image/file/文件.png"), tr("打开图像"), this);
+	QAction *Act_pic_open = new QAction(QIcon(":/cellgui/Resources/icons/文件.png"), tr("打开图像"), this);
 	Act_pic_open->setShortcuts(QKeySequence::Open);// 快捷键 Ctrl+O
 	connect(Act_pic_open, SIGNAL(triggered()), this, SLOT(Pic_open()));
 
-	QAction *Act_pic_detect = new QAction(QIcon("../Image/file/计算器.png"), tr("细胞识别"), this);
+	QAction *Act_pic_detect = new QAction(QIcon(":/cellgui/Resources/icons/计算器.png"), tr("细胞识别"), this);
 	Act_pic_detect->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));// 快捷键
 	connect(Act_pic_detect, SIGNAL(triggered()), this, SLOT(Pic_detect()));
 
-	QAction *Act_pic_saveas = new QAction(QIcon("../Image/file/包.png"), tr("保存标注后图像"), this);
+	QAction *Act_pic_saveas = new QAction(QIcon(":/cellgui/Resources/icons/包.png"), tr("保存标注后图像"), this);
 	Act_pic_saveas->setShortcuts(QKeySequence::Save);// 快捷键 
 	connect(Act_pic_saveas, SIGNAL(triggered()), this, SLOT(Pic_saveas()));
 
-	QAction *Act_pic_save = new QAction(QIcon("../Image/file/保存.png"), tr("保存分割后图像"), this);
+	QAction *Act_pic_save = new QAction(QIcon(":/cellgui/Resources/icons/保存.png"), tr("保存分割后图像"), this);
 	Act_pic_save->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));// 快捷键
 	connect(Act_pic_save, SIGNAL(triggered()), this, SLOT(Pic_save()));
 
-	QAction *Act_file_close = new QAction(QIcon("../Image/file/错的.png"), tr("关闭"), this);
+	QAction *Act_file_close = new QAction(QIcon(":/cellgui/Resources/icons/错的.png"), tr("关闭"), this);
 	Act_file_close->setShortcuts(QKeySequence::Close);// 快捷键
 	connect(Act_file_close, SIGNAL(triggered()), this, SLOT(close()));
 
-	QAction *Act_pic_autobatch = new QAction(QIcon("../Image/file/播放.png"), tr("自动批处理"), this);
+	QAction *Act_pic_autobatch = new QAction(QIcon(":/cellgui/Resources/icons/播放.png"), tr("自动批处理"), this);
 	Act_pic_autobatch->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));// 快捷键
 	connect(Act_pic_autobatch, SIGNAL(triggered()), this, SLOT(autobatch()));
+
+	QAction *Act_pic_next = new QAction(QIcon(":/cellgui/Resources/icons/Forward.png"), tr("显示下一张"), this);
+	Act_pic_next->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));// 快捷键
+	connect(Act_pic_next, SIGNAL(triggered()), this, SLOT(next()));
 
 	// 将动作添加到菜单上
 	file->addAction(Act_pic_open);
@@ -68,6 +75,7 @@ void cellgui::Menu_File()
 	file->addAction(Act_pic_save);
 	file->addSeparator();                       //添加分割线
 	file->addAction(Act_pic_autobatch);
+	file->addAction(Act_pic_next);
 	file->addSeparator();                       //添加分割线
 	file->addAction(Act_file_close);
 
@@ -77,7 +85,7 @@ void cellgui::Menu_File()
 	ui.mainToolBar->addAction(Act_pic_saveas);
 	ui.mainToolBar->addAction(Act_pic_save);
 	ui.mainToolBar->addAction(Act_pic_autobatch);
-
+	ui.mainToolBar->addAction(Act_pic_next);
 
 	// 任务栏
 	Act_pic_open->setStatusTip(tr("打开图像"));
@@ -86,14 +94,14 @@ void cellgui::Menu_File()
 	Act_pic_saveas->setStatusTip(tr("保存标注后图像"));
 	Act_file_close->setStatusTip(tr("关闭软件"));
 	Act_pic_autobatch->setStatusTip(tr("自动批处理"));
-
+	Act_pic_next->setStatusTip(tr("显示下一张"));
 
 }
 
 
 void cellgui::Pic_open()
 {
-	QString path = QFileDialog::getOpenFileName(this, tr("选择图像"), ".", tr("Images(*.jpg *.png *.bmp)"));                            // 文件选择框
+	QString path = QFileDialog::getOpenFileName(this, tr("选择图像"), ".", tr("Images(*.jpg *.png *.bmp)"));     // 文件选择框
 	if (!path.isEmpty())                                    // 检测当前路径是否正确
 	{
 		QImage* img = new QImage();
@@ -346,7 +354,7 @@ void cellgui::autobatch()
 	QDir dir(pathname);
 	if (!dir.exists())  return;
 	QDir dirs1, dirs2;
-	QString dirs1_str, dirs2_str;
+	//QString dirs1_str, dirs2_str;
 	dirs1_str = pathname + "/" + "marked pics";
 	dirs2_str = pathname + "/" + "split pics";
 	dirs1.mkpath(dirs1_str);
@@ -355,7 +363,7 @@ void cellgui::autobatch()
 	dir.setFilter(QDir::Files | QDir::NoSymLinks);
 	QStringList filters;  filters << QString("*.png");
 	dir.setNameFilters(filters);
-	int dir_cout = dir.count();
+	dir_cout = dir.count();
 	cout << dir_cout << endl;
 	if (dir_cout <= 0)  return;
 
@@ -385,7 +393,7 @@ void cellgui::autobatch()
 		QString file_name = dir[i];  //文件名称
 		QString file_path = pathname + separator + file_name;   //文件全路径
 
-		//显示原图
+		
 		QImage* img = new QImage();
 		if (!(img->load(file_path)))
 		{
@@ -466,4 +474,26 @@ int ma()
 
 	system("pause");
 	return 0;
+}
+
+
+void cellgui::next()
+{
+	static int cot = 0;
+	QString c = QString::number(cot, 10, 0);
+	QString path = dirs1_str + "/out" + c + ".jpg";
+	QImage* img = new QImage();
+	if (!(img->load(path)))
+	{
+		QMessageBox::information(this, tr("错误"), tr("打开图像失败！"));
+		delete img;
+		return;
+	}
+	imgLabel->setPixmap(QPixmap::fromImage(*img));
+	imgLabel->resize(img->width(), img->height());
+	currentPath = path;
+	cot++;
+	if (cot >= dir_cout) {
+		cot = 0;
+	}
 }
