@@ -36,9 +36,6 @@
     <ClCompile Include="cellgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cvgo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="cellgui.h">
