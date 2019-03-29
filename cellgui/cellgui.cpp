@@ -17,7 +17,7 @@ cellgui::cellgui(QWidget *parent)
 	ui.setupUi(this);
 
 	// 标题大小
-	setWindowTitle("	CELL	");
+	setWindowTitle("	CELL-CUT	");
 
 	// 软件图标
 	setWindowIcon(QIcon(":/cellgui/Resources/icons/细胞_cells.png"));
@@ -35,6 +35,7 @@ cellgui::cellgui(QWidget *parent)
 
 cellgui::~cellgui()
 {
+
 }
 
 void cellgui::Menu_File()
