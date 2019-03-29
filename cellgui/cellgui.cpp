@@ -23,8 +23,10 @@ cellgui::cellgui(QWidget *parent)
 	setWindowIcon(QIcon(":/cellgui/Resources/icons/细胞_cells.png"));
 
 	// 界面大小
-	resize(QApplication::desktop()->width()*0.5, QApplication::desktop()->height()*0.7);
-	move(QApplication::desktop()->width()*0.2, QApplication::desktop()->height()*0.1);
+	//resize(QApplication::desktop()->width()*0.5, QApplication::desktop()->height()*0.7);
+	//move(QApplication::desktop()->width()*0.2, QApplication::desktop()->height()*0.1);
+	resize(QApplication::desktop()->width()*0.485, QApplication::desktop()->height()*0.6);
+	move(QApplication::desktop()->width()*0.05, QApplication::desktop()->height()*0.01);
 
 	Menu_File();        // 文件菜单
 	InitImage();        // 初始化图像QLabel
@@ -98,7 +100,6 @@ void cellgui::Menu_File()
 
 }
 
-
 void cellgui::Pic_open()
 {
 	QString path = QFileDialog::getOpenFileName(this, tr("选择图像"), ".", tr("Images(*.jpg *.png *.bmp)"));     // 文件选择框
@@ -167,37 +168,86 @@ void cellgui::Pic_save()
 	}
 }
 
-
 void cellgui::InitImage()        // 初始化图像
 {
-	// 初始化QDockWidget.在以后会讲到，是可移动隐藏的小窗口，
-	// 可以实现PS、VS停靠窗口的效果，目前只需了解
-	dock_Image = new QDockWidget(tr("图像"), this);          //   图像
-	setCentralWidget(dock_Image);
+	QWidget* p = takeCentralWidget();   //删除中央窗体
+	if (p)
+		delete p;
+	dock_Image = new QDockWidget(tr("图像"), this);		//图像
+	dock_Image->setMinimumSize(600, 600);   // 设置最小宽高
+	dock_Geom = new QDockWidget(tr("标准比例图像"), this);          // 几何变换窗口
+	dock_Geom->setMinimumSize(300, 400);   // 设置最小宽高
+	dock_Output = new QDockWidget(tr("比例匹配控制"), this);          // 输出窗口
+	dock_Output->setMinimumSize(300, 180);   // 设置最小宽高
+
+	//配置feature
+	dock_Image->setFeatures(QDockWidget::NoDockWidgetFeatures);
+	dock_Geom->setFeatures(QDockWidget::NoDockWidgetFeatures);
+	dock_Output->setFeatures(QDockWidget::NoDockWidgetFeatures);
+
+	// 进行布局
+	setCentralWidget(dock_Image);       // 指定为中心窗口
+	addDockWidget(Qt::RightDockWidgetArea, dock_Geom);
+	addDockWidget(Qt::BottomDockWidgetArea, dock_Output);
+	splitDockWidget(dock_Geom, dock_Output, Qt::Vertical);      // 垂直
+
+	// 初始化QLabel+显示demo
+	imgLabel_demo = new QLabel(dock_Geom);
+	imgLabel_demo->setScaledContents(true);  // 设置QLabel自动适应图像大小
+
+	Demo.load(":/cellgui/Resources/demo/demo.png");
+	imgLabel_demo->setPixmap(QPixmap::fromImage(Demo));
+	imgLabel_demo->resize(Demo.width(), Demo.height());
+	// 增加滚动条,如果图像比imgLabel大，就会出现滚动条
+	QScrollArea* scrollArea0 = new QScrollArea(this);
+	scrollArea0->setBackgroundRole(QPalette::Midlight);
+	scrollArea0->setAlignment(Qt::AlignCenter);
+	scrollArea0->setWidget(imgLabel_demo);
+	dock_Geom->setWidget(scrollArea0);
 
 	// 初始化QLabel
 	imgLabel = new QLabel(dock_Image);
 	imgLabel->setScaledContents(true);  // 设置QLabel自动适应图像大小
 
-										// 初始图像
+	// 初始图像
 	QImage image = QImage(600, 550, QImage::Format_RGB32);  // 新建图像
 	image.fill(qRgb(255, 255, 255));                        // 全白
 	imgLabel->setPixmap(QPixmap::fromImage(image));         // 显示图像
 	imgLabel->resize(image.width(), image.height());        // 图像与imgLabel同大小
 
-															// 增加滚动条,如果图像比imgLabel大，就会出现滚动条
+	// 增加滚动条,如果图像比imgLabel大，就会出现滚动条
 	QScrollArea* scrollArea = new QScrollArea(this);
 	scrollArea->setBackgroundRole(QPalette::Dark);
 	scrollArea->setAlignment(Qt::AlignCenter);
 	scrollArea->setWidget(imgLabel);
 	dock_Image->setWidget(scrollArea);
-}
 
+	slider = new QSlider(Qt::Horizontal, dock_Output);  // 创建水平滑动条
+	slider->setRange(10,200);       // 设置范围
+	slider->setValue(100);            // 设置初始值
+	//slider->setSingleStep(1);
+
+	linetext = new QLineEdit("1", dock_Output);
+	//spinbox = new QSpinBox(dock_Output);             // 创建微调框
+	//spinbox->setRange(1, 20);      // 设置范围
+	//spinbox->setValue(10);           // 设置初始值
+	//spinbox->setSingleStep(0.1);
+
+	connect(slider, SIGNAL(valueChanged(int)), this, SLOT(setlinetextValue(int)));
+	connect(linetext, SIGNAL(returnPressed()), this, SLOT(setsliderValue()));
+	//connect(spinbox, SIGNAL(valueChanged(int)), slider, SLOT(setValue(int)));  
+	//connect(slider, SIGNAL(valueChanged(int)), spinbox, SLOT(setValue(int)));
+	connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slot_slider(int)));    
+
+	slider->move(35, 80);
+	linetext->move(170, 80);
+}
 
 void cellgui::Pic_detect()
 {
 	QImage img = imgLabel->pixmap()->toImage();     // 读取图像
-	Mat src = QImage2cvMat(img);
+	QImage result = img.scaled((img.width()) / bili, (img.height()) / bili);
+	Mat src = QImage2cvMat(result);
 
 	Mat gray_src;//转灰度
 	cvtColor(src, gray_src, CV_BGR2GRAY);
@@ -279,12 +329,11 @@ void cellgui::Pic_detect()
 
 	QImage imagesrc = cvMat2QImage(bg);
 	imgLabel->setPixmap(QPixmap::fromImage(imagesrc));
+	imgLabel->resize(imagesrc.width(), imagesrc.height());        // 图像与imgLabel同大小
 	src.copyTo(G0);
 	G = dstBw;
 }
 
-
-// cv::Mat转换成QImage
 QImage cvMat2QImage(const Mat& mat)
 {
 	if (mat.type() == CV_8UC1)                          // 单通道
@@ -450,33 +499,6 @@ void cellgui::autobatch()
 	QMessageBox::information(this, tr("Time consume"), d);
 }
 
-int ma()
-{
-	string fileName, grayFile;
-
-	string str1, str2;
-	Mat srcImage, grayImage;
-	for (int i = 0; i <= 10; i++)
-	{
-		stringstream ss1, ss2;
-
-		ss1 << i;
-		ss1 >> str1;
-		//cout << str1 << endl;
-		fileName = "" + str1 + ".jpg";
-		srcImage = imread(fileName);
-
-		grayFile = "out" + str1 + ".jpg";
-		cvtColor(srcImage, grayImage, CV_BGR2GRAY);
-		imwrite(grayFile, grayImage);
-
-	}
-
-	system("pause");
-	return 0;
-}
-
-
 void cellgui::next()
 {
 	static int cot = 0;
@@ -496,4 +518,27 @@ void cellgui::next()
 	if (cot >= dir_cout) {
 		cot = 0;
 	}
+}
+
+void cellgui::slot_slider(int value)
+{
+	bili = value/100.;
+	//imgLabel_demo->resize(bili*(imgLabel_demo->width), bili*(imgLabel_demo->height));
+	QImage result = Demo.scaled(bili*(Demo.width()), bili*(Demo.height()), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	imgLabel_demo->setPixmap(QPixmap::fromImage(result));         // 显示图像
+	imgLabel_demo->resize(result.width(), result.height());        // 图像与imgLabel同大小
+
+}
+
+void cellgui::setlinetextValue(int value)
+{
+	QString a = QString::number(value/100., 10, 2);
+	linetext->setText(a);
+}
+
+void cellgui::setsliderValue()
+{
+	QString a = linetext->displayText();
+	int b = (a.toDouble())*100;
+	slider->setValue(b);
 }

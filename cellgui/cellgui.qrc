@@ -9,5 +9,6 @@
         <file>Resources/icons/细胞_cells.png</file>
         <file>Resources/app/icoCELL.ico</file>
         <file>Resources/icons/Forward.png</file>
+        <file>Resources/demo/demo.png</file>
     </qresource>
 </RCC>
