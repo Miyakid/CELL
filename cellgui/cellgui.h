@@ -46,4 +46,5 @@ private slots:             // ²Ûº¯Êý
 	void slot_slider(int);
 	void setlinetextValue(int);
 	void setsliderValue();
+	void about();
 };

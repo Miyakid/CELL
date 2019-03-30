@@ -10,5 +10,7 @@
         <file>Resources/app/icoCELL.ico</file>
         <file>Resources/icons/Forward.png</file>
         <file>Resources/demo/demo.png</file>
+        <file>Resources/icons/CELL-CUT.png</file>
+        <file>Resources/icons/气泡.png</file>
     </qresource>
 </RCC>

@@ -1,4 +1,4 @@
-#include "cellgui.h"
+ï»¿#include "cellgui.h"
 
 using namespace cv;
 using namespace std;
@@ -16,20 +16,20 @@ cellgui::cellgui(QWidget *parent)
 {
 	ui.setupUi(this);
 
-	// ±êÌâ´óĞ¡
+	// æ ‡é¢˜å¤§å°
 	setWindowTitle("	CELL-CUT	");
 
-	// Èí¼şÍ¼±ê
-	setWindowIcon(QIcon(":/cellgui/Resources/icons/Ï¸°û_cells.png"));
+	// è½¯ä»¶å›¾æ ‡
+	setWindowIcon(QIcon(":/cellgui/Resources/icons/CELL-CUT.png"));
 
-	// ½çÃæ´óĞ¡
+	// ç•Œé¢å¤§å°
 	//resize(QApplication::desktop()->width()*0.5, QApplication::desktop()->height()*0.7);
 	//move(QApplication::desktop()->width()*0.2, QApplication::desktop()->height()*0.1);
 	resize(QApplication::desktop()->width()*0.485, QApplication::desktop()->height()*0.6);
 	move(QApplication::desktop()->width()*0.05, QApplication::desktop()->height()*0.01);
 
-	Menu_File();        // ÎÄ¼ş²Ëµ¥
-	InitImage();        // ³õÊ¼»¯Í¼ÏñQLabel
+	Menu_File();        // æ–‡ä»¶èœå•
+	InitImage();        // åˆå§‹åŒ–å›¾åƒQLabel
 
 }
 
@@ -40,49 +40,58 @@ cellgui::~cellgui()
 
 void cellgui::Menu_File()
 {
-	// ²Ëµ¥À¸
-	QMenu *file = menuBar()->addMenu(tr("ÎÄ¼ş"));
+	// èœå•æ 
+	QMenu *file = menuBar()->addMenu(tr("æ–‡ä»¶"));
 
-	QAction *Act_pic_open = new QAction(QIcon(":/cellgui/Resources/icons/ÎÄ¼ş.png"), tr("´ò¿ªÍ¼Ïñ"), this);
-	Act_pic_open->setShortcuts(QKeySequence::Open);// ¿ì½İ¼ü Ctrl+O
+	QAction *Act_pic_open = new QAction(QIcon(":/cellgui/Resources/icons/æ–‡ä»¶.png"), tr("æ‰“å¼€å›¾åƒ"), this);
+	Act_pic_open->setShortcuts(QKeySequence::Open);// å¿«æ·é”® Ctrl+O
 	connect(Act_pic_open, SIGNAL(triggered()), this, SLOT(Pic_open()));
 
-	QAction *Act_pic_detect = new QAction(QIcon(":/cellgui/Resources/icons/¼ÆËãÆ÷.png"), tr("Ï¸°ûÊ¶±ğ"), this);
-	Act_pic_detect->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));// ¿ì½İ¼ü
+	QAction *Act_pic_detect = new QAction(QIcon(":/cellgui/Resources/icons/è®¡ç®—å™¨.png"), tr("ç»†èƒè¯†åˆ«"), this);
+	Act_pic_detect->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));// å¿«æ·é”®
 	connect(Act_pic_detect, SIGNAL(triggered()), this, SLOT(Pic_detect()));
 
-	QAction *Act_pic_saveas = new QAction(QIcon(":/cellgui/Resources/icons/°ü.png"), tr("±£´æ±ê×¢ºóÍ¼Ïñ"), this);
-	Act_pic_saveas->setShortcuts(QKeySequence::Save);// ¿ì½İ¼ü 
+	QAction *Act_pic_saveas = new QAction(QIcon(":/cellgui/Resources/icons/åŒ….png"), tr("ä¿å­˜æ ‡æ³¨åå›¾åƒ"), this);
+	Act_pic_saveas->setShortcuts(QKeySequence::Save);// å¿«æ·é”® 
 	connect(Act_pic_saveas, SIGNAL(triggered()), this, SLOT(Pic_saveas()));
 
-	QAction *Act_pic_save = new QAction(QIcon(":/cellgui/Resources/icons/±£´æ.png"), tr("±£´æ·Ö¸îºóÍ¼Ïñ"), this);
-	Act_pic_save->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));// ¿ì½İ¼ü
+	QAction *Act_pic_save = new QAction(QIcon(":/cellgui/Resources/icons/ä¿å­˜.png"), tr("ä¿å­˜åˆ†å‰²åå›¾åƒ"), this);
+	Act_pic_save->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));// å¿«æ·é”®
 	connect(Act_pic_save, SIGNAL(triggered()), this, SLOT(Pic_save()));
 
-	QAction *Act_file_close = new QAction(QIcon(":/cellgui/Resources/icons/´íµÄ.png"), tr("¹Ø±Õ"), this);
-	Act_file_close->setShortcuts(QKeySequence::Close);// ¿ì½İ¼ü
+	QAction *Act_file_close = new QAction(QIcon(":/cellgui/Resources/icons/é”™çš„.png"), tr("å…³é—­"), this);
+	Act_file_close->setShortcuts(QKeySequence::Close);// å¿«æ·é”®
 	connect(Act_file_close, SIGNAL(triggered()), this, SLOT(close()));
 
-	QAction *Act_pic_autobatch = new QAction(QIcon(":/cellgui/Resources/icons/²¥·Å.png"), tr("×Ô¶¯Åú´¦Àí"), this);
-	Act_pic_autobatch->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));// ¿ì½İ¼ü
+	QAction *Act_pic_autobatch = new QAction(QIcon(":/cellgui/Resources/icons/æ’­æ”¾.png"), tr("è‡ªåŠ¨æ‰¹å¤„ç†"), this);
+	Act_pic_autobatch->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));// å¿«æ·é”®
 	connect(Act_pic_autobatch, SIGNAL(triggered()), this, SLOT(autobatch()));
 
-	QAction *Act_pic_next = new QAction(QIcon(":/cellgui/Resources/icons/Forward.png"), tr("ÏÔÊ¾ÏÂÒ»ÕÅ"), this);
-	Act_pic_next->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));// ¿ì½İ¼ü
+	QAction *Act_pic_next = new QAction(QIcon(":/cellgui/Resources/icons/Forward.png"), tr("æ˜¾ç¤ºä¸‹ä¸€å¼ "), this);
+	Act_pic_next->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));// å¿«æ·é”®
 	connect(Act_pic_next, SIGNAL(triggered()), this, SLOT(next()));
 
-	// ½«¶¯×÷Ìí¼Óµ½²Ëµ¥ÉÏ
+	QMenu *help = menuBar()->addMenu(tr("å¸®åŠ©"));
+
+	QAction *Act_about = new QAction(QIcon(":/cellgui/Resources/icons/æ°”æ³¡.png"), tr("å…³äºCELL-CUT"), this);
+	Act_about->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_A));// å¿«æ·é”®
+	connect(Act_about, SIGNAL(triggered()), this, SLOT(about()));
+
+
+
+	// å°†åŠ¨ä½œæ·»åŠ åˆ°èœå•ä¸Š
 	file->addAction(Act_pic_open);
 	file->addAction(Act_pic_detect);
 	file->addAction(Act_pic_saveas);
 	file->addAction(Act_pic_save);
-	file->addSeparator();                       //Ìí¼Ó·Ö¸îÏß
+	file->addSeparator();                       //æ·»åŠ åˆ†å‰²çº¿
 	file->addAction(Act_pic_autobatch);
 	file->addAction(Act_pic_next);
-	file->addSeparator();                       //Ìí¼Ó·Ö¸îÏß
+	file->addSeparator();                       //æ·»åŠ åˆ†å‰²çº¿
 	file->addAction(Act_file_close);
+	help->addAction(Act_about);
 
-	// ¹¤¾ßÀ¸
+	// å·¥å…·æ 
 	ui.mainToolBar->addAction(Act_pic_open);
 	ui.mainToolBar->addAction(Act_pic_detect);
 	ui.mainToolBar->addAction(Act_pic_saveas);
@@ -90,26 +99,27 @@ void cellgui::Menu_File()
 	ui.mainToolBar->addAction(Act_pic_autobatch);
 	ui.mainToolBar->addAction(Act_pic_next);
 
-	// ÈÎÎñÀ¸
-	Act_pic_open->setStatusTip(tr("´ò¿ªÍ¼Ïñ"));
-	Act_pic_detect->setStatusTip(tr("Ï¸°ûÊ¶±ğ"));
-	Act_pic_save->setStatusTip(tr("±£´æ·Ö¸îºóÍ¼Ïñ"));
-	Act_pic_saveas->setStatusTip(tr("±£´æ±ê×¢ºóÍ¼Ïñ"));
-	Act_file_close->setStatusTip(tr("¹Ø±ÕÈí¼ş"));
-	Act_pic_autobatch->setStatusTip(tr("×Ô¶¯Åú´¦Àí"));
-	Act_pic_next->setStatusTip(tr("ÏÔÊ¾ÏÂÒ»ÕÅ"));
+	// ä»»åŠ¡æ 
+	Act_pic_open->setStatusTip(tr("æ‰“å¼€å›¾åƒ"));
+	Act_pic_detect->setStatusTip(tr("ç»†èƒè¯†åˆ«"));
+	Act_pic_save->setStatusTip(tr("ä¿å­˜åˆ†å‰²åå›¾åƒ"));
+	Act_pic_saveas->setStatusTip(tr("ä¿å­˜æ ‡æ³¨åå›¾åƒ"));
+	Act_file_close->setStatusTip(tr("å…³é—­è½¯ä»¶"));
+	Act_pic_autobatch->setStatusTip(tr("è‡ªåŠ¨æ‰¹å¤„ç†"));
+	Act_pic_next->setStatusTip(tr("æ˜¾ç¤ºä¸‹ä¸€å¼ "));
+	Act_about->setStatusTip(tr("å…³äºCELL-CUT"));
 
 }
 
 void cellgui::Pic_open()
 {
-	QString path = QFileDialog::getOpenFileName(this, tr("Ñ¡ÔñÍ¼Ïñ"), ".", tr("Images(*.jpg *.png *.bmp)"));     // ÎÄ¼şÑ¡Ôñ¿ò
-	if (!path.isEmpty())                                    // ¼ì²âµ±Ç°Â·¾¶ÊÇ·ñÕıÈ·
+	QString path = QFileDialog::getOpenFileName(this, tr("é€‰æ‹©å›¾åƒ"), ".", tr("Images(*.jpg *.png *.bmp)"));     // æ–‡ä»¶é€‰æ‹©æ¡†
+	if (!path.isEmpty())                                    // æ£€æµ‹å½“å‰è·¯å¾„æ˜¯å¦æ­£ç¡®
 	{
 		QImage* img = new QImage();
 		if (!(img->load(path)))
 		{
-			QMessageBox::information(this, tr("´íÎó"), tr("´ò¿ªÍ¼ÏñÊ§°Ü£¡"));
+			QMessageBox::information(this, tr("é”™è¯¯"), tr("æ‰“å¼€å›¾åƒå¤±è´¥ï¼"));
 			delete img;
 			return;
 		}
@@ -121,7 +131,7 @@ void cellgui::Pic_open()
 
 void cellgui::Pic_saveas()      
 {
-	QString path = QFileDialog::getSaveFileName(this, tr("Í¼Ïñ±£´æµ½"), ".", tr("Images(*.jpg *.png *.bmp)"));
+	QString path = QFileDialog::getSaveFileName(this, tr("å›¾åƒä¿å­˜åˆ°"), ".", tr("Images(*.jpg *.png *.bmp)"));
 	if (!path.isEmpty())
 	{
 		QImage img = imgLabel->pixmap()->toImage();
@@ -134,7 +144,7 @@ void cellgui::Pic_save()
 {
 	QString path = QFileDialog::getExistingDirectory(
 		this,
-		tr("±£´æÄ¿Â¼"),
+		tr("ä¿å­˜ç›®å½•"),
 		"/home",
 		QFileDialog::ShowDirsOnly
 		| QFileDialog::DontResolveSymlinks);
@@ -142,26 +152,26 @@ void cellgui::Pic_save()
 
 	if (!path.isEmpty())
 	{
-		//ÂÖÀª·¢ÏÖ¡¢»æÖÆ¡¢½ØÈ¡¡¢±£´æ
+		//è½®å»“å‘ç°ã€ç»˜åˆ¶ã€æˆªå–ã€ä¿å­˜
 		vector<vector<Point>> contours1;
 		vector<Vec4i> hierarchy1;
-		findContours(G, contours1, hierarchy1, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());//·¢ÏÖÂÖÀª
+		findContours(G, contours1, hierarchy1, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());//å‘ç°è½®å»“
 
 		string file_name;
 		string str1;
 		for (size_t i = 0; i < contours1.size(); i++) {
 			if (contours1[i].size() > 20) {
-				//¸îÈ¡¾ØĞÎÇøÓò±£´æ
+				//å‰²å–çŸ©å½¢åŒºåŸŸä¿å­˜
 				Mat src_ex;
 				Rect rect = boundingRect(contours1[i]);
-				rect = rect + Point(-3, -3);	//Æ½ÒÆ
-				rect = rect + Size(6, 6);	    //Ëõ·Å£¬×óÉÏ¶¥µã²»±ä
+				rect = rect + Point(-3, -3);	//å¹³ç§»
+				rect = rect + Size(6, 6);	    //ç¼©æ”¾ï¼Œå·¦ä¸Šé¡¶ç‚¹ä¸å˜
 
 				stringstream ss1, ss2;
 				ss1 << i;
 				ss1 >> str1;
 				file_name = paths + "/out" + str1 + ".jpg";
-				copyMakeBorder(G0, src_ex, 8, 8, 8, 8, BORDER_CONSTANT, Scalar(255, 255, 255));	//À©´óÔ­Í¼Ïñ²¢Ìî³ä±ßÔµ
+				copyMakeBorder(G0, src_ex, 8, 8, 8, 8, BORDER_CONSTANT, Scalar(255, 255, 255));	//æ‰©å¤§åŸå›¾åƒå¹¶å¡«å……è¾¹ç¼˜
 				imwrite(file_name, src_ex(rect + Point(8, 8)));
 			}
 		}
@@ -169,69 +179,69 @@ void cellgui::Pic_save()
 	}
 }
 
-void cellgui::InitImage()        // ³õÊ¼»¯Í¼Ïñ
+void cellgui::InitImage()        // åˆå§‹åŒ–å›¾åƒ
 {
-	QWidget* p = takeCentralWidget();   //É¾³ıÖĞÑë´°Ìå
+	QWidget* p = takeCentralWidget();   //åˆ é™¤ä¸­å¤®çª—ä½“
 	if (p)
 		delete p;
-	dock_Image = new QDockWidget(tr("Í¼Ïñ"), this);		//Í¼Ïñ
-	dock_Image->setMinimumSize(600, 600);   // ÉèÖÃ×îĞ¡¿í¸ß
-	dock_Geom = new QDockWidget(tr("±ê×¼±ÈÀıÍ¼Ïñ"), this);          // ¼¸ºÎ±ä»»´°¿Ú
-	dock_Geom->setMinimumSize(300, 400);   // ÉèÖÃ×îĞ¡¿í¸ß
-	dock_Output = new QDockWidget(tr("±ÈÀıÆ¥Åä¿ØÖÆ"), this);          // Êä³ö´°¿Ú
-	dock_Output->setMinimumSize(300, 180);   // ÉèÖÃ×îĞ¡¿í¸ß
+	dock_Image = new QDockWidget(tr("å›¾åƒ"), this);		//å›¾åƒ
+	dock_Image->setMinimumSize(600, 600);   // è®¾ç½®æœ€å°å®½é«˜
+	dock_Geom = new QDockWidget(tr("æ ‡å‡†æ¯”ä¾‹å›¾åƒ"), this);          // å‡ ä½•å˜æ¢çª—å£
+	dock_Geom->setMinimumSize(300, 400);   // è®¾ç½®æœ€å°å®½é«˜
+	dock_Output = new QDockWidget(tr("æ¯”ä¾‹åŒ¹é…æ§åˆ¶"), this);          // è¾“å‡ºçª—å£
+	dock_Output->setMinimumSize(300, 180);   // è®¾ç½®æœ€å°å®½é«˜
 
-	//ÅäÖÃfeature
+	//é…ç½®feature
 	dock_Image->setFeatures(QDockWidget::NoDockWidgetFeatures);
 	dock_Geom->setFeatures(QDockWidget::NoDockWidgetFeatures);
 	dock_Output->setFeatures(QDockWidget::NoDockWidgetFeatures);
 
-	// ½øĞĞ²¼¾Ö
-	setCentralWidget(dock_Image);       // Ö¸¶¨ÎªÖĞĞÄ´°¿Ú
+	// è¿›è¡Œå¸ƒå±€
+	setCentralWidget(dock_Image);       // æŒ‡å®šä¸ºä¸­å¿ƒçª—å£
 	addDockWidget(Qt::RightDockWidgetArea, dock_Geom);
 	addDockWidget(Qt::BottomDockWidgetArea, dock_Output);
-	splitDockWidget(dock_Geom, dock_Output, Qt::Vertical);      // ´¹Ö±
+	splitDockWidget(dock_Geom, dock_Output, Qt::Vertical);      // å‚ç›´
 
-	// ³õÊ¼»¯QLabel+ÏÔÊ¾demo
+	// åˆå§‹åŒ–QLabel+æ˜¾ç¤ºdemo
 	imgLabel_demo = new QLabel(dock_Geom);
-	imgLabel_demo->setScaledContents(true);  // ÉèÖÃQLabel×Ô¶¯ÊÊÓ¦Í¼Ïñ´óĞ¡
+	imgLabel_demo->setScaledContents(true);  // è®¾ç½®QLabelè‡ªåŠ¨é€‚åº”å›¾åƒå¤§å°
 
 	Demo.load(":/cellgui/Resources/demo/demo.png");
 	imgLabel_demo->setPixmap(QPixmap::fromImage(Demo));
 	imgLabel_demo->resize(Demo.width(), Demo.height());
-	// Ôö¼Ó¹ö¶¯Ìõ,Èç¹ûÍ¼Ïñ±ÈimgLabel´ó£¬¾Í»á³öÏÖ¹ö¶¯Ìõ
+	// å¢åŠ æ»šåŠ¨æ¡,å¦‚æœå›¾åƒæ¯”imgLabelå¤§ï¼Œå°±ä¼šå‡ºç°æ»šåŠ¨æ¡
 	QScrollArea* scrollArea0 = new QScrollArea(this);
 	scrollArea0->setBackgroundRole(QPalette::Midlight);
 	scrollArea0->setAlignment(Qt::AlignCenter);
 	scrollArea0->setWidget(imgLabel_demo);
 	dock_Geom->setWidget(scrollArea0);
 
-	// ³õÊ¼»¯QLabel
+	// åˆå§‹åŒ–QLabel
 	imgLabel = new QLabel(dock_Image);
-	imgLabel->setScaledContents(true);  // ÉèÖÃQLabel×Ô¶¯ÊÊÓ¦Í¼Ïñ´óĞ¡
+	imgLabel->setScaledContents(true);  // è®¾ç½®QLabelè‡ªåŠ¨é€‚åº”å›¾åƒå¤§å°
 
-	// ³õÊ¼Í¼Ïñ
-	QImage image = QImage(600, 550, QImage::Format_RGB32);  // ĞÂ½¨Í¼Ïñ
-	image.fill(qRgb(255, 255, 255));                        // È«°×
-	imgLabel->setPixmap(QPixmap::fromImage(image));         // ÏÔÊ¾Í¼Ïñ
-	imgLabel->resize(image.width(), image.height());        // Í¼ÏñÓëimgLabelÍ¬´óĞ¡
+	// åˆå§‹å›¾åƒ
+	QImage image = QImage(600, 550, QImage::Format_RGB32);  // æ–°å»ºå›¾åƒ
+	image.fill(qRgb(255, 255, 255));                        // å…¨ç™½
+	imgLabel->setPixmap(QPixmap::fromImage(image));         // æ˜¾ç¤ºå›¾åƒ
+	imgLabel->resize(image.width(), image.height());        // å›¾åƒä¸imgLabelåŒå¤§å°
 
-	// Ôö¼Ó¹ö¶¯Ìõ,Èç¹ûÍ¼Ïñ±ÈimgLabel´ó£¬¾Í»á³öÏÖ¹ö¶¯Ìõ
+	// å¢åŠ æ»šåŠ¨æ¡,å¦‚æœå›¾åƒæ¯”imgLabelå¤§ï¼Œå°±ä¼šå‡ºç°æ»šåŠ¨æ¡
 	QScrollArea* scrollArea = new QScrollArea(this);
 	scrollArea->setBackgroundRole(QPalette::Dark);
 	scrollArea->setAlignment(Qt::AlignCenter);
 	scrollArea->setWidget(imgLabel);
 	dock_Image->setWidget(scrollArea);
 
-	slider = new QSlider(Qt::Horizontal, dock_Output);  // ´´½¨Ë®Æ½»¬¶¯Ìõ
-	slider->setRange(10,200);       // ÉèÖÃ·¶Î§
-	slider->setValue(100);            // ÉèÖÃ³õÊ¼Öµ
+	slider = new QSlider(Qt::Horizontal, dock_Output);  // åˆ›å»ºæ°´å¹³æ»‘åŠ¨æ¡
+	slider->setRange(10,200);       // è®¾ç½®èŒƒå›´
+	slider->setValue(100);            // è®¾ç½®åˆå§‹å€¼
 	//slider->setSingleStep(1);
 
 	linetext = new QLineEdit("1", dock_Output);
-	//spinbox = new QSpinBox(dock_Output);             // ´´½¨Î¢µ÷¿ò
-	//spinbox->setRange(1, 20);      // ÉèÖÃ·¶Î§
-	//spinbox->setValue(10);           // ÉèÖÃ³õÊ¼Öµ
+	//spinbox = new QSpinBox(dock_Output);             // åˆ›å»ºå¾®è°ƒæ¡†
+	//spinbox->setRange(1, 20);      // è®¾ç½®èŒƒå›´
+	//spinbox->setValue(10);           // è®¾ç½®åˆå§‹å€¼
 	//spinbox->setSingleStep(0.1);
 
 	connect(slider, SIGNAL(valueChanged(int)), this, SLOT(setlinetextValue(int)));
@@ -246,16 +256,16 @@ void cellgui::InitImage()        // ³õÊ¼»¯Í¼Ïñ
 
 void cellgui::Pic_detect()
 {
-	QImage img = imgLabel->pixmap()->toImage();     // ¶ÁÈ¡Í¼Ïñ
+	QImage img = imgLabel->pixmap()->toImage();     // è¯»å–å›¾åƒ
 	QImage result = img.scaled((img.width()) / bili, (img.height()) / bili);
 	Mat src = QImage2cvMat(result);
 
-	Mat gray_src;//×ª»Ò¶È
+	Mat gray_src;//è½¬ç°åº¦
 	cvtColor(src, gray_src, CV_BGR2GRAY);
 
-	Mat blur_src;//ÂË²¨
+	Mat blur_src;//æ»¤æ³¢
 	bilateralFilter(gray_src, blur_src, 7, 150, 50);
-	//±ßÔµ·¢ÏÖ
+	//è¾¹ç¼˜å‘ç°
 	Mat x;
 	Mat y;
 	Mat fin;
@@ -278,74 +288,74 @@ void cellgui::Pic_detect()
 
 		}
 	}
-	threshold(fin, fin, /*230*/10/*£¨¸´ÔÓÏ¸°ûÍâĞÎ£©most_num*/, 255, THRESH_BINARY);
+	threshold(fin, fin, /*230*/10/*ï¼ˆå¤æ‚ç»†èƒå¤–å½¢ï¼‰most_num*/, 255, THRESH_BINARY);
 
-	//ÅòÕÍ£¨¿´Çé¿öÊ¹ÓÃ£¬Ò»°ãÓÃÓÚÏ¸°û±ßÔµÓë±³¾°¼«Îª½Ó½ü£©
+	//è†¨èƒ€ï¼ˆçœ‹æƒ…å†µä½¿ç”¨ï¼Œä¸€èˆ¬ç”¨äºç»†èƒè¾¹ç¼˜ä¸èƒŒæ™¯æä¸ºæ¥è¿‘ï¼‰
 	Mat str0;
 	str0 = getStructuringElement(MORPH_RECT, Size(4, 4), Point(-1, -1));
-	dilate(fin, fin, str0, Point(-1, -1), 1);//ÅòÕÍ
-	erode(fin, fin, str0, Point(-1, -1), 1);//¸¯Ê´
+	dilate(fin, fin, str0, Point(-1, -1), 1);//è†¨èƒ€
+	erode(fin, fin, str0, Point(-1, -1), 1);//è…èš€
 
-											//ÂÖÀª+Ìî³ä
+											//è½®å»“+å¡«å……
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-	findContours(fin, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point());//ÂÖÀª·¢ÏÖ
+	findContours(fin, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point());//è½®å»“å‘ç°
 	Mat ddst = Mat::zeros(src.size(), gray_src.type());
 	for (size_t i = 0; i < contours.size(); i++) {
 		if (contours[i].size() > 50) drawContours(ddst, contours, i, Scalar(255, 255, 255), -1);
 	}
 	fin = ddst;
 
-	//Ìî³ä¿×¶´,Èç¹û²»Ö´ĞĞÕâÒ»²½Ò²¿ÉÒÔ£¬µ«ÊÇÅöµ½½ÏĞ¡Ï¸°ûÊ±ÈİÒ×±»µ±×÷Ğ¡ÎïÌåÈ¥³ı£¬Óöµ½¸´ÔÓÍâĞÎÏ¸°ûÊ±Ò×ÓÚ×öÅòÕÍ²Ù×÷
+	//å¡«å……å­”æ´,å¦‚æœä¸æ‰§è¡Œè¿™ä¸€æ­¥ä¹Ÿå¯ä»¥ï¼Œä½†æ˜¯ç¢°åˆ°è¾ƒå°ç»†èƒæ—¶å®¹æ˜“è¢«å½“ä½œå°ç‰©ä½“å»é™¤ï¼Œé‡åˆ°å¤æ‚å¤–å½¢ç»†èƒæ—¶æ˜“äºåšè†¨èƒ€æ“ä½œ
 	Mat dstBw;
 	Size m_Size = fin.size();
-	Mat Temp = Mat::zeros(m_Size.height + 2, m_Size.width + 2, fin.type());//ÑÓÕ¹Í¼Ïñ
+	Mat Temp = Mat::zeros(m_Size.height + 2, m_Size.width + 2, fin.type());//å»¶å±•å›¾åƒ
 	fin.copyTo(Temp(Range(1, m_Size.height + 1), Range(1, m_Size.width + 1)));
 	cv::floodFill(Temp, Point(0, 0), Scalar(255));
-	Mat cutImg;//²Ã¼ôÑÓÕ¹µÄÍ¼Ïñ
+	Mat cutImg;//è£å‰ªå»¶å±•çš„å›¾åƒ
 	Temp(Range(1, m_Size.height + 1), Range(1, m_Size.width + 1)).copyTo(cutImg);
 	dstBw = fin | (~cutImg);
 
-	//ÅòÕÍ£¨¿´Çé¿öÊ¹ÓÃ£¬Ò»°ãÓÃÓÚÏ¸°û±ßÔµÓë±³¾°¼«Îª½Ó½ü£©
+	//è†¨èƒ€ï¼ˆçœ‹æƒ…å†µä½¿ç”¨ï¼Œä¸€èˆ¬ç”¨äºç»†èƒè¾¹ç¼˜ä¸èƒŒæ™¯æä¸ºæ¥è¿‘ï¼‰
 	Mat str;
 	str = getStructuringElement(MORPH_RECT, Size(6, 6), Point(-1, -1));
 	dilate(dstBw, dstBw, str, Point(-1, -1), 1);
 
-	//ÂÖÀª·¢ÏÖ¡¢»æÖÆ¡¢½ØÈ¡¡¢±£´æ
+	//è½®å»“å‘ç°ã€ç»˜åˆ¶ã€æˆªå–ã€ä¿å­˜
 	vector<vector<Point>> contours1;
 	vector<Vec4i> hierarchy1;
-	findContours(dstBw, contours1, hierarchy1, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());//·¢ÏÖÂÖÀª
+	findContours(dstBw, contours1, hierarchy1, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());//å‘ç°è½®å»“
 
 	Mat bg;
 	src.copyTo(bg);
 	for (size_t i = 0; i < contours1.size(); i++) {
 		if (contours1[i].size() > 20) {
-			//»æÖÆÂÖÀª¾ØĞÎ
+			//ç»˜åˆ¶è½®å»“çŸ©å½¢
 			Rect rect = boundingRect(contours1[i]);
-			rect = rect + Point(-3, -3);	//Æ½ÒÆ
-			rect = rect + Size(6, 6);	    //Ëõ·Å£¬×óÉÏ¶¥µã²»±ä
+			rect = rect + Point(-3, -3);	//å¹³ç§»
+			rect = rect + Size(6, 6);	    //ç¼©æ”¾ï¼Œå·¦ä¸Šé¡¶ç‚¹ä¸å˜
 			rectangle(bg, rect, Scalar(0, 255, 230), 2, LINE_AA, 0);
 		}
 	}
 
 	QImage imagesrc = cvMat2QImage(bg);
 	imgLabel->setPixmap(QPixmap::fromImage(imagesrc));
-	imgLabel->resize(imagesrc.width(), imagesrc.height());        // Í¼ÏñÓëimgLabelÍ¬´óĞ¡
+	imgLabel->resize(imagesrc.width(), imagesrc.height());        // å›¾åƒä¸imgLabelåŒå¤§å°
 	src.copyTo(G0);
 	G = dstBw;
 }
 
 QImage cvMat2QImage(const Mat& mat)
 {
-	if (mat.type() == CV_8UC1)                          // µ¥Í¨µÀ
+	if (mat.type() == CV_8UC1)                          // å•é€šé“
 	{
 		QImage image(mat.cols, mat.rows, QImage::Format_Indexed8);
-		image.setColorCount(256);                       // »Ò¶È¼¶Êı256
+		image.setColorCount(256);                       // ç°åº¦çº§æ•°256
 		for (int i = 0; i < 256; i++)
 		{
 			image.setColor(i, qRgb(i, i, i));
 		}
-		uchar *pSrc = mat.data;                         // ¸´ÖÆmatÊı¾İ
+		uchar *pSrc = mat.data;                         // å¤åˆ¶matæ•°æ®
 		for (int row = 0; row < mat.rows; row++)
 		{
 			uchar *pDest = image.scanLine(row);
@@ -354,16 +364,16 @@ QImage cvMat2QImage(const Mat& mat)
 		}
 		return image;
 	}
-	else if (mat.type() == CV_8UC3)                     // 3Í¨µÀ
+	else if (mat.type() == CV_8UC3)                     // 3é€šé“
 	{
-		const uchar *pSrc = (const uchar*)mat.data;     // ¸´ÖÆÏñËØ
-		QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);    // R, G, B ¶ÔÓ¦ 0,1,2
-		return image.rgbSwapped();                      // rgbSwappedÊÇÎªÁËÏÔÊ¾Ğ§¹ûÉ«²ÊºÃÒ»Ğ©¡£
+		const uchar *pSrc = (const uchar*)mat.data;     // å¤åˆ¶åƒç´ 
+		QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);    // R, G, B å¯¹åº” 0,1,2
+		return image.rgbSwapped();                      // rgbSwappedæ˜¯ä¸ºäº†æ˜¾ç¤ºæ•ˆæœè‰²å½©å¥½ä¸€äº›ã€‚
 	}
-	else if (mat.type() == CV_8UC4)                     // 4Í¨µÀ
+	else if (mat.type() == CV_8UC4)                     // 4é€šé“
 	{
-		const uchar *pSrc = (const uchar*)mat.data;     // ¸´ÖÆÏñËØ
-		QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_ARGB32);        // B,G,R,A ¶ÔÓ¦ 0,1,2,3
+		const uchar *pSrc = (const uchar*)mat.data;     // å¤åˆ¶åƒç´ 
+		QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_ARGB32);        // B,G,R,A å¯¹åº” 0,1,2,3
 		return image.copy();
 	}
 	else
@@ -372,7 +382,7 @@ QImage cvMat2QImage(const Mat& mat)
 	}
 }
 
-Mat QImage2cvMat(QImage image)//QImage×ª»»³ÉMat
+Mat QImage2cvMat(QImage image)//QImageè½¬æ¢æˆMat
 {
 	Mat mat;
 	switch (image.format())
@@ -397,7 +407,7 @@ void cellgui::autobatch()
 {
 	QString pathname = QFileDialog::getExistingDirectory(
 		this,
-		tr("Ñ¡ÔñÅú´¦ÀíÔ´Í¼ÏñÄ¿Â¼"),
+		tr("é€‰æ‹©æ‰¹å¤„ç†æºå›¾åƒç›®å½•"),
 		"/home",
 		QFileDialog::ShowDirsOnly
 		| QFileDialog::DontResolveSymlinks);
@@ -440,14 +450,14 @@ void cellgui::autobatch()
 	for (int i = 0; i<dir_cout; i++)
 	{
 
-		QString file_name = dir[i];  //ÎÄ¼şÃû³Æ
-		QString file_path = pathname + separator + file_name;   //ÎÄ¼şÈ«Â·¾¶
+		QString file_name = dir[i];  //æ–‡ä»¶åç§°
+		QString file_path = pathname + separator + file_name;   //æ–‡ä»¶å…¨è·¯å¾„
 
 		
 		QImage* img = new QImage();
 		if (!(img->load(file_path)))
 		{
-			QMessageBox::information(this, tr("´íÎó"), tr("´ò¿ªÍ¼ÏñÊ§°Ü£¡"));
+			QMessageBox::information(this, tr("é”™è¯¯"), tr("æ‰“å¼€å›¾åƒå¤±è´¥ï¼"));
 			delete img;
 			return;
 		}
@@ -455,10 +465,10 @@ void cellgui::autobatch()
 		imgLabel->resize(img->width(), img->height());
 		currentPath = file_path;
 
-		//Ï¸°ûÊ¶±ğ
+		//ç»†èƒè¯†åˆ«
 		Pic_detect();
 
-		//±£´æ±ê×¢Í¼Ïñ
+		//ä¿å­˜æ ‡æ³¨å›¾åƒ
 		stringstream ss1;
 		ss1 << i;
 		ss1 >> str1;
@@ -468,18 +478,18 @@ void cellgui::autobatch()
 		imwrite(pic_name1, Image);
 		currentPath = file_path;
 
-		//±£´æ¸îÈ¡Í¼Ïñ
+		//ä¿å­˜å‰²å–å›¾åƒ
 		vector<vector<Point>> contours1;
 		vector<Vec4i> hierarchy1;
-		findContours(G, contours1, hierarchy1, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());//·¢ÏÖÂÖÀª
+		findContours(G, contours1, hierarchy1, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point());//å‘ç°è½®å»“
 
 		for (size_t j = 0; j < contours1.size(); j++) {
 			if (contours1[j].size() > 20) {
-				//¸îÈ¡¾ØĞÎÇøÓò±£´æ
+				//å‰²å–çŸ©å½¢åŒºåŸŸä¿å­˜
 				Mat src_ex;
 				Rect rect = boundingRect(contours1[j]);
-				rect = rect + Point(-3, -3);	//Æ½ÒÆ
-				rect = rect + Size(6, 6);	    //Ëõ·Å£¬×óÉÏ¶¥µã²»±ä
+				rect = rect + Point(-3, -3);	//å¹³ç§»
+				rect = rect + Size(6, 6);	    //ç¼©æ”¾ï¼Œå·¦ä¸Šé¡¶ç‚¹ä¸å˜
 
 				stringstream ss1,ss2;
 				ss1 << i;
@@ -487,7 +497,7 @@ void cellgui::autobatch()
 				ss1 >> str1;
 				ss2 >> str2;
 				pic_name2 = path2 + "/result" + str1 + "-" +str2 + ".jpg";
-				copyMakeBorder(G0, src_ex, 8, 8, 8, 8, BORDER_CONSTANT, Scalar(255, 255, 255));	//À©´óÔ­Í¼Ïñ²¢Ìî³ä±ßÔµ
+				copyMakeBorder(G0, src_ex, 8, 8, 8, 8, BORDER_CONSTANT, Scalar(255, 255, 255));	//æ‰©å¤§åŸå›¾åƒå¹¶å¡«å……è¾¹ç¼˜
 				imwrite(pic_name2, src_ex(rect + Point(8, 8)));
 			}
 		}
@@ -508,7 +518,7 @@ void cellgui::next()
 	QImage* img = new QImage();
 	if (!(img->load(path)))
 	{
-		QMessageBox::information(this, tr("´íÎó"), tr("´ò¿ªÍ¼ÏñÊ§°Ü£¡"));
+		QMessageBox::information(this, tr("é”™è¯¯"), tr("æ‰“å¼€å›¾åƒå¤±è´¥ï¼"));
 		delete img;
 		return;
 	}
@@ -526,8 +536,8 @@ void cellgui::slot_slider(int value)
 	bili = value/100.;
 	//imgLabel_demo->resize(bili*(imgLabel_demo->width), bili*(imgLabel_demo->height));
 	QImage result = Demo.scaled(bili*(Demo.width()), bili*(Demo.height()), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-	imgLabel_demo->setPixmap(QPixmap::fromImage(result));         // ÏÔÊ¾Í¼Ïñ
-	imgLabel_demo->resize(result.width(), result.height());        // Í¼ÏñÓëimgLabelÍ¬´óĞ¡
+	imgLabel_demo->setPixmap(QPixmap::fromImage(result));         // æ˜¾ç¤ºå›¾åƒ
+	imgLabel_demo->resize(result.width(), result.height());        // å›¾åƒä¸imgLabelåŒå¤§å°
 
 }
 
@@ -542,4 +552,12 @@ void cellgui::setsliderValue()
 	QString a = linetext->displayText();
 	int b = (a.toDouble())*100;
 	slider->setValue(b);
+}
+
+void cellgui::about()
+{
+	QMessageBox message(QMessageBox::NoIcon, "å…³äºCELL-CUT", "\nè½¯ä»¶åç§°ï¼šCELL-CUT\n\nç‰ˆæœ¬å·ï¼š1.0\n\nÂ©Copyright Reserved\næµ™æ±Ÿå¤§å­¦æµ·æ´‹å­¦é™¢â€œæµ®æ¸¸æ¤ç‰©è‡ªåŠ¨æˆåƒç³»ç»Ÿå›¾åƒæå–æŠ€æœ¯ç ”ç©¶â€srtpå°ç»„ã€‚ä¿ç•™æ‰€æœ‰æƒåˆ©ã€‚");
+	message.setWindowFlags(Qt::Drawer);
+	message.setIconPixmap(QPixmap(":/cellgui/Resources/icons/CELL-CUT.png"));
+	message.exec();
 }
